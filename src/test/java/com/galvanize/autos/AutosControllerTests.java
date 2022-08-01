@@ -151,8 +151,26 @@ public class AutosControllerTests {
 
 
     // GET: /api/autos/{vin}
-        // GET: /api/autos/{vin} returns status code 204 Auto not found
+
         // GET: /api/autos/{vin} returns status code 200 and the requested auto
+    @Test
+    void getAuto_withVin_returnsAuto()throws Exception{
+        Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+        when(autosService.getAuto(anyString())).thenReturn(automobile);
+        mockMvc.perform(get("/api/autos/"+automobile.getVin()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("vin").value(automobile.getVin()));
+
+    }
+
+
+        // GET: /api/autos/{vin} returns status code 204 Auto not found
+    @Test
+    void getAutos_withVin_returnsNoContent() throws Exception {
+        when(autosService.getAuto(anyString())).thenReturn(null);
+        mockMvc.perform(get("/api/autos/AABBCC"))
+                .andExpect(status().isNoContent());
+    }
 
     // PATCH: /api/autos/{vin}
         // PATCH: /api/autos/{vin} returns status code 204 Auto not found
