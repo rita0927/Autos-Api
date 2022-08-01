@@ -141,10 +141,7 @@ public class AutosControllerTests {
     @Test
     void addAuto_badRequ_returns400() throws Exception{
             when(autosService.addAuto(any(Automobile.class))).thenThrow(InvalidAutoException.class);
-            String json = "{\"year\":1967,\"make\":\"Ford\",\"model\":\"Mustant\",\"color\":null,\"owner\":null,\"vin\":\"AABBCC\"}";
-            mockMvc.perform(post("/api/autos")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json))
+            mockMvc.perform(post("/api/autos"))
                     .andExpect(status().isBadRequest());
     }
 
@@ -162,7 +159,6 @@ public class AutosControllerTests {
                 .andExpect(jsonPath("vin").value(automobile.getVin()));
 
     }
-
 
         // GET: /api/autos/{vin} returns status code 204 Auto not found
     @Test
@@ -187,7 +183,20 @@ public class AutosControllerTests {
                 .andExpect(jsonPath("owner").value("Bob"));
     }
         // PATCH: /api/autos/{vin} returns status code 204 Auto not found
+        @Test
+        void updateAutos_withVin_returnsNoContent() throws Exception {
+            doThrow(new AutoNotFoundException()).when(autosService).updateAuto(anyString(), anyString(), anyString());
+            mockMvc.perform(patch("/api/autos/AABBCC"))
+                    .andExpect(status().isNoContent());
+        }
+
         // PATCH: /api/autos returns status code 400
+        @Test
+        void updateAuto_badRequ_returns400() throws Exception{
+            when(autosService.updateAuto(anyString(), anyString(), anyString())).thenThrow(InvalidAutoException.class);
+            mockMvc.perform(patch("/api/autos/AABBCC"))
+                    .andExpect(status().isBadRequest());
+        }
 
 
     // DELETE: /api/autos/{vin}
@@ -205,9 +214,7 @@ public class AutosControllerTests {
             doThrow(new AutoNotFoundException()).when(autosService).deleteAuto(anyString());
             mockMvc.perform(delete("/api/autos/AABBCC"))
                     .andExpect(status().isNoContent());
-
     }
-
 
 
 }
