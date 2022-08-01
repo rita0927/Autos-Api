@@ -1,11 +1,14 @@
 package com.galvanize.autos;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -27,6 +30,8 @@ public class AutosControllerTests {
 
     @MockBean
     AutosService autosService;
+
+    ObjectMapper mapper = new ObjectMapper();
 
     // Get: /api/autos
 
@@ -117,8 +122,33 @@ public class AutosControllerTests {
 
 
     // POST: //api/autos
-        // POST: /api/autos returns status code 400
         // POST: /api/autos returns status code 200 and created auto
+    @Test
+    void addAuto_valid_returnsAuto() throws Exception {
+            Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+            String json = " {\"year\":1967,\"make\":\"Ford\",\"model\":\"Mustant\",\"color\":null,\"owner\":null,\"vin\":\"AABBCC\"}";
+            when(autosService.addAuto(any(Automobile.class))).thenReturn(automobile);
+            mockMvc.perform(post("/api/autos")
+                    .contentType(MediaType.APPLICATION_JSON)
+//                    .content(mapper.writeValueAsString(automobile)))
+                    .content(json))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("make").value("Ford"));
+
+    }
+
+    // POST: /api/autos returns status code 400
+    @Test
+    void addAuto_badRequ_returns400() throws Exception{
+            when(autosService.addAuto(any(Automobile.class))).thenThrow(InvalidAutoException.class);
+            String json = " {\"year\":1967,\"make\":\"Ford\",\"model\":\"Mustant\",\"color\":null,\"owner\":null,\"vin\":\"AABBCC\"}";
+            mockMvc.perform(post("/api/autos")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json))
+                    .andExpect(status().isBadRequest());
+    }
+
+
 
     // GET: /api/autos/{vin}
         // GET: /api/autos/{vin} returns status code 204 Auto not found
