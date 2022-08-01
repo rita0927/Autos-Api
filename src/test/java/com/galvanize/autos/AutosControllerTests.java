@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -191,10 +191,22 @@ public class AutosControllerTests {
 
 
     // DELETE: /api/autos/{vin}
-        // DELETE: /api/autos/{vin} returns status code 204 Auto not found
         // DELETE: /api/autos/{vin} returns status code 202, delete request accepted
+    @Test
+    void deleteAuto_withVin_exists_returns202() throws Exception{
+            mockMvc.perform(delete("/api/autos/AABBCC"))
+                    .andExpect(status().isAccepted());
+            verify(autosService).deleteAuto(anyString());
+    }
 
+        // DELETE: /api/autos/{vin} returns status code 204 Auto not found
+    @Test
+    void deleteAutos_withVin_returnsNoContent() throws Exception{
+            doThrow(new AutoNotFoundException()).when(autosService).deleteAuto(anyString());
+            mockMvc.perform(delete("/api/autos/AABBCC"))
+                    .andExpect(status().isNoContent());
 
+    }
 
 
 
