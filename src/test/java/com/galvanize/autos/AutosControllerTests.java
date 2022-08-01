@@ -68,14 +68,11 @@ public class AutosControllerTests {
 
             List<Automobile> automobiles = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
-                automobiles.add(new Automobile(2000+i, "Ford", "Mustang", "AABB"+i));
-
-//                if (i==2 || i == 3){
-//                    Automobile automobile = automobiles.get(i);
-//                    automobile.color = "red";
-//                    automobiles.set(i,automobile);
-//                }
+                Automobile automobile = new Automobile(2000+i, "Ford", "Mustang", "AABB"+i);
+                automobile.setColor("red");
+                automobiles.add(automobile);
             }
+
             when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(automobiles));
             mockMvc.perform(get("/api/autos?color=red&make=ford"))
                     .andDo(print())
@@ -89,13 +86,10 @@ public class AutosControllerTests {
         void getAutos_searchColor_exists_returnsAutosList() throws Exception{
             List<Automobile> automobiles = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
-                automobiles.add(new Automobile(2000+i, "Ford", "Mustang", "AABB"+i));
+                Automobile automobile = new Automobile(2000+i, "Ford", "Mustang", "AABB"+i);
+                automobile.setColor("red");
+                automobiles.add(automobile);
             }
-//                if (i==2 || i == 3){
-//                    Automobile automobile = automobiles.get(i);
-//                    automobile.color = "red";
-//                    automobiles.set(i,automobile);
-//                }
 
             when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(automobiles));
             mockMvc.perform(get("/api/autos/?color=red&make=null"))
@@ -144,7 +138,6 @@ public class AutosControllerTests {
             mockMvc.perform(post("/api/autos"))
                     .andExpect(status().isBadRequest());
     }
-
 
 
     // GET: /api/autos/{vin}
