@@ -141,7 +141,7 @@ public class AutosControllerTests {
     @Test
     void addAuto_badRequ_returns400() throws Exception{
             when(autosService.addAuto(any(Automobile.class))).thenThrow(InvalidAutoException.class);
-            String json = " {\"year\":1967,\"make\":\"Ford\",\"model\":\"Mustant\",\"color\":null,\"owner\":null,\"vin\":\"AABBCC\"}";
+            String json = "{\"year\":1967,\"make\":\"Ford\",\"model\":\"Mustant\",\"color\":null,\"owner\":null,\"vin\":\"AABBCC\"}";
             mockMvc.perform(post("/api/autos")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(json))
@@ -173,9 +173,22 @@ public class AutosControllerTests {
     }
 
     // PATCH: /api/autos/{vin}
+        // PATCH: /api/autos/{vin} returns status code 200 and patched auto
+    @Test
+    void updateAuto_withObject_returnAuto() throws Exception{
+        Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+        when(autosService.updateAuto(anyString(), anyString(), anyString())).thenReturn(automobile);
+        mockMvc.perform(patch("/api/autos/"+automobile.getVin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\":\"red\",\"owner\":\"Bob\"}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("color").value("red"))
+                .andExpect(jsonPath("owner").value("Bob"));
+    }
         // PATCH: /api/autos/{vin} returns status code 204 Auto not found
         // PATCH: /api/autos returns status code 400
-        // PATCH: /api/autos/{vin} returns status code 200 and patched auto
+
 
     // DELETE: /api/autos/{vin}
         // DELETE: /api/autos/{vin} returns status code 204 Auto not found
