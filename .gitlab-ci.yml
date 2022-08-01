@@ -3,7 +3,6 @@ image: openjdk:11
 stages:
   - build
   - test
-
 build:
   stage: build
   script:
