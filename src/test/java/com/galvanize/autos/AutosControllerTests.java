@@ -177,7 +177,7 @@ public class AutosControllerTests {
         mockMvc.perform(patch("/api/autos/"+automobile.getVin())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"color\":\"red\",\"owner\":\"Bob\"}"))
-                .andDo(print())
+//                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("color").value("red"))
                 .andExpect(jsonPath("owner").value("Bob"));
@@ -185,8 +185,10 @@ public class AutosControllerTests {
         // PATCH: /api/autos/{vin} returns status code 204 Auto not found
         @Test
         void updateAutos_withVin_returnsNoContent() throws Exception {
-            doThrow(new AutoNotFoundException()).when(autosService).updateAuto(anyString(), anyString(), anyString());
-            mockMvc.perform(patch("/api/autos/AABBCC"))
+            when(autosService.updateAuto(anyString(), anyString(), anyString())).thenThrow(AutoNotFoundException.class);
+            mockMvc.perform(patch("/api/autos/AABBCC")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"color\":\"red\",\"owner\":\"Bob\"}"))
                     .andExpect(status().isNoContent());
         }
 

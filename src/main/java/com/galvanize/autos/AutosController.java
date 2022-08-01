@@ -39,14 +39,22 @@ public class AutosController {
     public ResponseEntity<Automobile> updateAuto(@PathVariable String vin, @RequestBody UpdateRequest update){
         Automobile automobile;
         try {
-            automobile = autosService.updateAuto(vin, update.getColor(),update.getOwner());
-            automobile.setColor(update.getColor());
-            automobile.setOwner(update.getOwner());
+            automobile = autosService.updateAuto(vin,update.getColor(),update.getOwner());
         } catch (AutoNotFoundException e) {
             return ResponseEntity.noContent().build();
+        } catch (InvalidAutoException e) {
+            return ResponseEntity.badRequest().build();
         }
+        automobile.setColor(update.getColor());
+        automobile.setOwner(update.getOwner());
         return ResponseEntity.ok(automobile);
     }
+
+//        Automobile automobile = autosService.updateAuto(vin, update.getColor(),update.getOwner());
+//        automobile.setColor(update.getColor());
+//        automobile.setOwner(update.getOwner());
+//        return automobile == null? ResponseEntity.noContent().build() : ResponseEntity.ok(automobile);
+//    }
 
     @DeleteMapping("/api/autos/{vin}")
     public ResponseEntity deleteAuto(@PathVariable String vin) {
@@ -64,6 +72,13 @@ public class AutosController {
     public void invalidAutoExceptionHandler(InvalidAutoException e){
 
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void autoNotFoundExceptionHandler(AutoNotFoundException e){
+
+    }
+
 
 
 }
