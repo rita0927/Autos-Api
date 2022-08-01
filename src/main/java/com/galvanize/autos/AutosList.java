@@ -1,5 +1,6 @@
 package com.galvanize.autos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,6 +9,10 @@ public class AutosList {
 
     public AutosList(List<Automobile> automobiles) {
         this.automobiles = automobiles;
+    }
+
+    public AutosList() {
+        this.automobiles = new ArrayList<>();
     }
 
     public List<Automobile> getAutomobiles() {
