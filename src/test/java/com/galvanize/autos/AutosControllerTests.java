@@ -53,7 +53,7 @@ public class AutosControllerTests {
         void getAutos_noParams_none_returnsNoContent() throws Exception {
             when(autosService.getAutos()).thenReturn(new AutosList());
             mockMvc.perform(get("/api/autos"))
-                    .andDo(print())
+//                    .andDo(print())
                     .andExpect(status().isNoContent());
         }
 
@@ -64,19 +64,56 @@ public class AutosControllerTests {
             List<Automobile> automobiles = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 automobiles.add(new Automobile(2000+i, "Ford", "Mustang", "AABB"+i));
+
+//                if (i==2 || i == 3){
+//                    Automobile automobile = automobiles.get(i);
+//                    automobile.color = "red";
+//                    automobiles.set(i,automobile);
+//                }
             }
             when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(automobiles));
             mockMvc.perform(get("/api/autos?color=red&make=ford"))
+                    .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.automobiles", hasSize(5)));
         }
 
 
-
-
-
         // GET: /api/autos?color=red returns red cars
+        @Test
+        void getAutos_searchColor_exists_returnsAutosList() throws Exception{
+            List<Automobile> automobiles = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                automobiles.add(new Automobile(2000+i, "Ford", "Mustang", "AABB"+i));
+            }
+//                if (i==2 || i == 3){
+//                    Automobile automobile = automobiles.get(i);
+//                    automobile.color = "red";
+//                    automobiles.set(i,automobile);
+//                }
+
+            when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(automobiles));
+            mockMvc.perform(get("/api/autos/?color=red&make=null"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.automobiles", hasSize(5)));
+
+        }
+
         // GET: /api/autos?make=ford returns Ford cars
+
+    @Test
+    void getAutos_searchMake_exists_returnsAutosList() throws Exception{
+        List<Automobile> automobiles = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            automobiles.add(new Automobile(2000+i, "Ford", "Mustang", "AABB"+i));
+        }
+
+        when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(automobiles));
+        mockMvc.perform(get("/api/autos/?color=null&make=ford"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+
+    }
 
 
     // POST: //api/autos
