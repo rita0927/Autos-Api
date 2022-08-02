@@ -83,7 +83,26 @@ class AutosServiceTest {
     }
 
     @Test
-    void updateAuto() {
+    void updateAuto_valid_returnsAuto() {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+        automobile.setColor("red");
+        automobile.setOwner("Bob");
+        when(autosRepository.findByVin(anyString()))
+                .thenReturn(Optional.of(automobile));
+        when(autosRepository.save(any(Automobile.class))).thenReturn(automobile);
+        Automobile auto = autosService.updateAuto(automobile.getVin(), "red", "Bob");
+        assertThat(auto).isNotNull();
+        assertThat(auto.getColor()).isEqualTo(automobile.getColor());
+        assertThat(auto.getOwner()).isEqualTo(automobile.getOwner());
+    }
+
+    @Test
+    void updateAuto_invalid_returnsNull() {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+        when(autosRepository.findByVin(anyString()))
+                .thenReturn(Optional.ofNullable(null));
+        Automobile auto = autosService.updateAuto(automobile.getVin(), "red", "Bob");
+        assertThat(auto).isNull();
     }
 
     @Test
