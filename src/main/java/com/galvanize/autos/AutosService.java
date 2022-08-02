@@ -15,7 +15,6 @@ public class AutosService {
     }
 
     public AutosList getAutos() {
-
         return new AutosList(autosRepository.findAll());
     }
 
@@ -62,6 +61,5 @@ public class AutosService {
         } else {
             throw new AutoNotFoundException();
         }
-
     }
 }

@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -131,6 +130,5 @@ class AutosServiceTest {
                 .thenReturn(Optional.empty());
         assertThatExceptionOfType(AutoNotFoundException.class)
                 .isThrownBy(() -> autosService.deleteAuto(anyString()));
-
     }
 }
