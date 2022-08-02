@@ -22,7 +22,7 @@ public class Automobile {
     private String color;
     @Column(name = "owner_name")
     private String owner;
-    @JsonFormat(pattern = "mm/dd/yyyy")
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private Date purchaseDate;
     private String vin;
 
