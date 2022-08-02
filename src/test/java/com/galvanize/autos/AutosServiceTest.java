@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,8 +62,24 @@ class AutosServiceTest {
         assertThat(auto.getMake()).isEqualTo("Ford");
     }
 
+    //how to test invalid addAuto???
     @Test
-    void getAuto() {
+    void addAuto_invalid_returnsAuto() {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+        when(autosRepository.save(any(Automobile.class)))
+                .thenReturn(null);
+        Automobile auto = autosService.addAuto(automobile);
+        assertThat(auto).isNull();
+    }
+
+    @Test
+    void getAuto_byVin_returnsAuto() {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustant", "AABBCC");
+        when(autosRepository.findByVin(anyString()))
+                .thenReturn(Optional.of(automobile));
+        Automobile auto = autosService.getAuto("AABBCC");
+        assertThat(auto).isNotNull();
+        assertThat(auto.getVin()).isEqualTo(automobile.getVin());
     }
 
     @Test
