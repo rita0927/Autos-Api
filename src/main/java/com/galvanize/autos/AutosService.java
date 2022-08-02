@@ -33,7 +33,14 @@ public class AutosService {
     }
 
     public Automobile getAuto(String vin) {
-        return autosRepository.findByVin(vin).orElse(null);
+//        return autosRepository.findByVin(vin).orElse(null);
+
+        Optional<Automobile> optAuto = autosRepository.findByVin(vin);
+        if (optAuto.isPresent()){
+            return optAuto.get();
+        } else {
+            throw new AutoNotFoundException();
+        }
     }
 
     public Automobile updateAuto(String vin, String color, String owner) {
@@ -48,7 +55,13 @@ public class AutosService {
         return null;
     }
 
-    public void deleteAuto(String vin) {
+    public void deleteAuto(String vin){
+        Optional<Automobile> optAuto = autosRepository.findByVin(vin);
+        if(optAuto.isPresent()){
+            autosRepository.delete(optAuto.get());
+        } else {
+            throw new AutoNotFoundException();
+        }
 
     }
 }
