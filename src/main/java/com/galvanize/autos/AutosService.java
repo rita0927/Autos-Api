@@ -5,9 +5,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutosService {
 
+    AutosRepository autosRepository;
+
+    public AutosService(AutosRepository autosRepository) {
+        this.autosRepository = autosRepository;
+    }
 
     public AutosList getAutos() {
-        return null;
+
+        return new AutosList(autosRepository.findAll());
     }
 
     public AutosList getAutos(String color, String make) {
